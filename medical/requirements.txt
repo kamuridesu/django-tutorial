@@ -1,0 +1,4 @@
+psycopg2==2.9.5
+Django==4.1.6
+django-stubs==1.14.0
+django-stubs-ext==0.7.0

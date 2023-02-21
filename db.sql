@@ -1,0 +1,1 @@
+CREATE DATABASE medical WITH TEMPLATE = template0 OWNER = postgres;
