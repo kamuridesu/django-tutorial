@@ -18,19 +18,17 @@ class IndexView(generic.ListView):
     context_object_name = "latest_question_list"
 
     def get_queryset(self) -> QuerySet[Any]:
-        return Question.objects.filter(
-            pub_date__lte=timezone.now()
-        ).order_by("-pub_date")[:5]
-    
+        return Question.objects.filter(pub_date__lte=timezone.now()).order_by(
+            "-pub_date"
+        )[:5]
+
 
 class DetailView(generic.DetailView):
     model = Question
     template_name = "polls/detail.html"
 
     def get_queryset(self) -> QuerySet[Any]:
-        return Question.objects.filter(
-            pub_date__lt=timezone.now()
-        )
+        return Question.objects.filter(pub_date__lt=timezone.now())
 
 
 class ResultView(generic.DetailView):
@@ -38,9 +36,7 @@ class ResultView(generic.DetailView):
     template_name = "polls/results.html"
 
     def get_queryset(self) -> QuerySet[Any]:
-        return Question.objects.filter(
-            pub_date__lt=timezone.now()
-        )
+        return Question.objects.filter(pub_date__lt=timezone.now())
 
 
 # def index(request: WSGIRequest | ASGIRequest) -> HttpResponse:
@@ -65,13 +61,14 @@ class ResultView(generic.DetailView):
 def vote(request: WSGIRequest | ASGIRequest, question_id: str) -> HttpResponse:
     question = get_object_or_404(Question, pk=question_id)
     try:
-        selected_choice = question.choice_set.get(ok=request.POST['choice'])
+        selected_choice = question.choice_set.get(ok=request.POST["choice"])
     except (KeyError, Choice.DoesNotExist):
-        return render(request, 'polls/detail.html', {
-            'question': question,
-            'error_message': "You didn't select a choice"
-        })
+        return render(
+            request,
+            "polls/detail.html",
+            {"question": question, "error_message": "You didn't select a choice"},
+        )
     else:
         selected_choice.votes += 1
         selected_choice.save()
-        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+        return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
